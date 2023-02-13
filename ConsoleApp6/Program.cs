@@ -4,28 +4,34 @@
     {
         static void Main(string[] args)
         {
+            MyObject myObject= new MyObject();
+            myObject.Start = Int32.Parse(Console.ReadLine());
+            myObject.End = Int32.Parse(Console.ReadLine());
             //Console.WriteLine("Hello, World!");
-            ThreadStart threadStart = new ThreadStart(ConsoleWrite);
-            Thread thread = new Thread(threadStart);
+            ParameterizedThreadStart parameterizedThreadStart = new ParameterizedThreadStart(ConsoleWrite);
+            //ThreadStart threadStart = new ThreadStart(ConsoleWrite);
+            Thread thread = new Thread(parameterizedThreadStart);
             thread.IsBackground = true;
             thread.Priority = ThreadPriority.Lowest;
-            thread.Start();
+            thread.Start(myObject);
             thread.Join();
-            for (int i=0;i <=50;i++)
-            {
-                Console.WriteLine("Из основной программы: " + i);
-            }
         }
-        static void ConsoleWrite()
+        static void ConsoleWrite(object my)
         {
-            for (int i = 0; i <= 50; i++)
-            {
-                if(i == 25)
-                {
-                    Console.ReadLine();
-                }
+            int Start = ((MyObject)my).Start;
+            int End = ((MyObject)my).End;
+            string Message = ((MyObject)my).Message;
+            for (int i = Start; i <= End; i++)
+            {               
                 Console.WriteLine("Из потока: " + i);
             }
         }
+    }
+
+    class MyObject
+    {
+        public int Start { get; set; }
+        public int End { get; set; }
+        public string Message { get; set; } = "THIS IS CHEATS!";
     }
 }
